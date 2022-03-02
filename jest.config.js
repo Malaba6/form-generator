@@ -6,8 +6,6 @@ module.exports = {
     '<rootDir>/node_modules/', '<rootDir>/coverage', '<rootDir>/dist'],
   moduleDirectories: ['<rootDir>/node_modules', '<rootDir>/src'],
   moduleNameMapper: {
-    // '@src/(.*)': '<rootDir>/src/$1',
-    // '@styles/(.*)': '<rootDir>/styles/$1',
     '\\.(scss|css|sass)$': 'identity-obj-proxy',
   },
   coverageDirectory: 'coverage',

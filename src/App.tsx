@@ -67,8 +67,8 @@ export default function App() {
   ];
 
   return <div className="">
-    <div data-testid="form-wrapper" className='border border-gray-200  px-8 pb-16 mt-8
-      md:w-1/2 lg:w-1/3 m-auto'>
+    <div data-testid="form-wrapper" className='border border-gray-200 
+     px-8 pb-16 mt-8 md:w-1/2 lg:w-1/3 m-auto'>
       {data.map(({ header, id, form }) => 
         <div key={id}>
           <Header header={header} />
