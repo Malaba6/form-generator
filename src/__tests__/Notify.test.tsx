@@ -9,7 +9,7 @@ const props = {
 }
 
 describe("<Notify />", () => {
-  const {container, getByText} = render(<Notify {...props} />)
+  const { container, getByText } = render(<Notify {...props} />)
   test("should render the Notify compoenent", async () => {
     expect(getByText('Profile Updated successfully!')).toBeInTheDocument()
   })

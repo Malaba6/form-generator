@@ -1,83 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react'
+import { useSelector, shallowEqual, useDispatch } from "react-redux"
+import { Dispatch } from "redux"
+import { isEqual } from "lodash"
+
 import './style.css';
 import Header from './Header';
 import Input from './Input';
 import Notify from './Notify';
+import { updateForm } from "./store/actionCreators"
 
 export default function App() {
   const [open, setOpen] = useState(false)
-  const data = [
-    {
-      header: 'Name',
-      id: 'header-name',
-      form: [
-        {
-          text: 'First Name',
-          type: 'label',
-          id: 'label-1',
-        },
-        {
-          text: 'John',
-          type: 'input',
-          id: 'input-1',
-        },
-        {
-          text: 'Last Name',
-          type: 'label',
-          id: 'label-2',
-        },
-        {
-          text: 'Joe',
-          type: 'input',
-          id: 'input-2',
-        },
-      ],
-    },
-    {
-      header: 'Address',
-      id: 'header-adress',
-      form: [
-        {
-          text: 'Street 1',
-          type: 'label',
-          id: 'label-3',
-        },
-        {
-          text: 'My Street',
-          type: 'input',
-          id: 'input-3',
-        },
-        {
-          text: 'Zip',
-          type: 'label',
-          id: 'label-4',
-        },
-        {
-          text: '90210',
-          type: 'input',
-          id: 'input-4',
-        },
-        {
-          text: 'Update Profile',
-          type: 'button',
-          id: 'update-profile',
-        },
-      ],
-    },
-  ];
+  const [isUnsaved, setIsUnsaved] = useState(false)
+  const forms: Form[] = useSelector(
+    (state: FormState) => state.forms,
+    shallowEqual
+  )
+  
+  const [form, setForm] = useState<Form>(forms[0])
 
-  return <div className="">
-    <div data-testid="form-wrapper" className='border border-gray-200 
-     px-8 pb-16 mt-8 md:w-1/2 lg:w-1/3 m-auto'>
-      {data.map(({ header, id, form }) => 
+  useEffect(() => {
+    const oldForms = JSON.parse(localStorage.getItem('forms') || '[]')
+    if (!isEqual(oldForms, forms)) {
+      setOpen(true)
+    }
+  }, [forms])
+
+  const dispatch: Dispatch<any> = useDispatch()
+
+  const saveForm = useCallback(
+    (form: Form) => {
+      dispatch(updateForm(form))
+      setIsUnsaved(false)
+    },
+    [dispatch])
+
+  const hanldeSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    saveForm(form)
+  }
+
+  return <div data-testid="app">
+    <form data-testid="form-wrapper"
+      onSubmit={hanldeSubmit}
+      className='border border-gray-200 
+      px-8 pb-16 mt-8 md:w-1/2 lg:w-1/3 m-auto'>
+      {forms.map(({ header, id, form }) => 
         <div key={id}>
           <Header header={header} />
           {form.map(({ text, type, id }) =>
-            <Input key={id} text={text} type={type} id={id} setOpen={setOpen} />
+            <Input key={id}
+              text={text} type={type} id={id}
+              forms={forms}
+              header={header}
+              open={open}
+              setIsUnsaved={setIsUnsaved}
+              isUnsaved={isUnsaved}
+              setForm={setForm} />
           )}
         </div>
       )}
-    </div>
+    </form>
     <Notify {...{ open, setOpen }} />
   </div>;
 }
