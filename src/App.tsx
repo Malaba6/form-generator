@@ -19,12 +19,6 @@ export default function App() {
   
   const [form, setForm] = useState<Form>(forms[0])
 
-  useEffect(() => {
-    const oldForms = JSON.parse(localStorage.getItem('forms') || '[]')
-    if (!isEqual(oldForms, forms)) {
-      setOpen(true)
-    }
-  }, [forms])
 
   const dispatch: Dispatch<any> = useDispatch()
 
@@ -32,6 +26,7 @@ export default function App() {
     (form: Form) => {
       dispatch(updateForm(form))
       setIsUnsaved(false)
+      setOpen(true)
     },
     [dispatch])
 
